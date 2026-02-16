@@ -2,7 +2,7 @@
   "name": "socketio-server",
   "version": "1.0.0",
   "engines": {
-    "node": "24.7.0"
+    "node": "24.x"
   },
   "main": "src/server.js",
   "scripts": {
