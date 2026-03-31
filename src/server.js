@@ -1,10 +1,14 @@
 const express = require('express');
 const { Server } = require('socket.io');
 const http = require('http');
+const path = require('path');
 const debug = require('debug')('app:server');
 
 const app = express();
 const server = http.createServer(app);
+
+// Serve custom images from the /images directory at the repo root
+app.use('/images', express.static(path.join(__dirname, '../images')));
 
 const PORT = process.env.PORT || 3005;
 const corsOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ["http://localhost:3000", "http://localhost:3001"];
