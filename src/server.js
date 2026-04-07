@@ -56,6 +56,11 @@ io.on('connection', (socket) => {
         io.to(roomKey).emit('matchData', data);
     });
 
+    socket.on('matchEvent', (data) => {
+        debug(`matchEvent received from ${socket.id}: ${JSON.stringify(data)}`);
+        io.to(roomKey).emit('matchEvent', data);
+    });
+
     socket.on('updateConfig', (data) => {
         debug(`updateConfig received from ${socket.id}: ${JSON.stringify(data)}`);
         io.to(roomKey).emit('updateConfig', data);
