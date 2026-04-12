@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 
 // Serve custom images from the /images directory at the repo root
-app.use('/images', express.static(path.join(__dirname, '../images')));
+app.use('/images', express.static(path.join(__dirname, '../images'), { maxAge: '1d' }));
 
 const PORT = process.env.PORT || 3005;
 const corsOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : ["http://localhost:3000", "http://localhost:3001"];
@@ -59,6 +59,11 @@ io.on('connection', (socket) => {
     socket.on('matchEvent', (data) => {
         debug(`matchEvent received from ${socket.id}: ${JSON.stringify(data)}`);
         io.to(roomKey).emit('matchEvent', data);
+    });
+
+    socket.on('overlaySetup', (data) => {
+        debug(`overlaySetup received from ${socket.id}: ${JSON.stringify(data)}`);
+        io.to(roomKey).emit('overlaySetup', data);
     });
 
     socket.on('updateConfig', (data) => {
