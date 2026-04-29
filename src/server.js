@@ -106,6 +106,28 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Proxy for esvoley.es — bypasses CORS restrictions for the tracker client
+app.get('/proxy/esvoley', (req, res, next) => {
+    const origin = req.headers.origin;
+    if (corsOrigins.includes(origin)) {
+        res.set('Access-Control-Allow-Origin', origin);
+    }
+    next();
+}, async (req, res) => {
+    const { path: esvoleyPath } = req.query;
+    if (!esvoleyPath || !String(esvoleyPath).startsWith('/')) {
+        return res.status(400).json({ error: 'Missing or invalid path parameter' });
+    }
+    try {
+        const upstream = await fetch(`https://esvoley.es${esvoleyPath}`);
+        const text = await upstream.text();
+        res.set('Content-Type', 'text/html; charset=utf-8');
+        res.send(text);
+    } catch (err) {
+        res.status(502).json({ error: 'Upstream fetch failed', detail: String(err) });
+    }
+});
+
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 }); 
